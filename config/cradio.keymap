@@ -7,10 +7,9 @@
 
 // International umlauts, see https://github.com/urob/zmk-helpers/tree/main?tab=readme-ov-file
 #include "zmk-helpers/helper.h"
-#include "zmk-helpers/key-labels/34.h" // 34 key-position labels
+//#include "zmk-helpers/key-labels/34.h" // 34 key-position labels
 #include "zmk-helpers/unicode-chars/swedish.dtsi" // Source Swe for å ä ö unicode-chars
 #include "zmk-helpers/unicode-chars/danish.dtsi" //  Source Danish for æ, ø unicode chars
-// #include "zmk-helpers/unicode-chars/german.dtsi" //  Source German for ü char
 
 // Home row mods macro
 #define HRML(k1,k2,k3,k4) &ht LSHFT k1  &ht LALT k2  &ht LCTRL k3  &ht LGUI k4
