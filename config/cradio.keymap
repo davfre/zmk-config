@@ -32,7 +32,7 @@
     conditional_layers {
         compatible = "zmk,conditional-layers";
         tri_layer {
-            if-layers = <RGHT LFT>;
+            if-layers = <RGT LFT>;
             then-layer = <TRI>;
         };
     };
