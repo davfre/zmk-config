@@ -10,7 +10,7 @@
 // On windows, install "WinCompose"
 #define HOST_OS 2
 #include "zmk-helpers/helper.h"
-//#include "zmk-helpers/key-labels/34.h" // 34 key-position labels
+#include "zmk-helpers/key-labels/34.h" // 34 key-position labels
 #include "zmk-helpers/unicode-chars/swedish.dtsi" // Source Swe for å ä ö unicode-chars
 #include "zmk-helpers/unicode-chars/danish.dtsi" //  Source Danish for æ, ø unicode chars
 
@@ -116,3 +116,4 @@
             >;
         };
     };
+};
