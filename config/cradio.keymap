@@ -10,8 +10,8 @@
 #define HRMR(k1,k2,k3,k4) &ht RGUI k1  &ht RCTRL k2  &ht RALT k3  &ht RSHFT k4
 
 #define DEFAULT 0
-#define RIGHT 1
-#define LEFT 2
+#define RGT 1
+#define LFT 2
 #define TRI 3
 
 / {
@@ -32,7 +32,7 @@
     conditional_layers {
         compatible = "zmk,conditional-layers";
         tri_layer {
-            if-layers = <RIGHT LEFT>;
+            if-layers = <RGHT LFT>;
             then-layer = <TRI>;
         };
     };
@@ -51,7 +51,7 @@
         //│  Z       │  X       │  C       │  D       │  V       │   │  K       │  H       │ , <      │ . >      │ / ?      │
             &kp Z      &kp X      &kp C      &kp D      &kp V          &kp K      &kp H      &kp COMMA  &kp DOT    &kp FSLH
         //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
-                                            &lt LEFT TAB   &kp ENTER     &kp SPACE  &lt RIGHT BSPC
+                                            &lt LFT TAB   &kp ENTER     &kp SPACE  &lt RGT BSPC
         //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
             >;
         };
@@ -83,7 +83,7 @@
              &kp AT    &kp EXCL   &kp HASH   &kp DLLR   &kp PRCNT      &kp ASTRK  &kp MINUS  &kp EQUAL  &kp BSLH   &kp PIPE
         //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
         //│          │          │          │          │          │   │  &       │  _       │  +       │  `       │          │
-            &trans     &trans     &trans     &trans     &trans          &kp AMPS   &kp UNDER  &kp PLUS   &kp GRAVE   &trans
+            &trans     &trans     &trans     &trans     &trans          ,./&kp AMPS   &kp UNDER  &kp PLUS   &kp GRAVE   &trans
         //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
                                              &trans     &trans         &trans     &trans
         //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
