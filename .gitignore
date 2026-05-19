@@ -1,2 +1,8 @@
 build
 .DS_Store
+.west/
+modules/
+zephyr/
+zmk/
+zmk-helpers/
+firmware_for_studio/
