@@ -1,0 +1,27 @@
+[project]
+name = "zmk-config-tools"
+version = "0.1.0"
+description = "Local Python tooling for building this ZMK config."
+requires-python = ">=3.12"
+dependencies = [
+    "anytree",
+    "canopen",
+    "grpcio-tools",
+    "intelhex",
+    "packaging",
+    "patool",
+    "progress",
+    "psutil",
+    "pyelftools>=0.29",
+    "pykwalify",
+    "pylink-square",
+    "pyserial",
+    "pyyaml>=6.0",
+    "requests",
+    "semver",
+    "tqdm",
+    "west>=0.14.0",
+]
+
+[tool.uv]
+package = false

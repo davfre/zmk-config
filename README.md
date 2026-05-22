@@ -53,14 +53,41 @@ zmk-config/
 
 ## Build
 
+ZMK is firmware built on top of Zephyr. This repo only contains the keyboard-specific config; West reads `config/west.yml` and fetches the ZMK, Zephyr, helper, and module repos needed to build it.
+
 ```bash
 just                 # list recipes
-just init            # first checkout only: west init -l config; west update
-just zephyr-export   # after installing the Zephyr SDK
 just build           # build both halves and collect firmware
 ```
 
 `just build` builds both halves. The left/central half is built with ZMK Studio enabled. Use `just west-update` to update fetched dependencies after the workspace has been initialized.
+
+## Setup And Updates
+
+First setup on a new machine or checkout:
+
+```bash
+just sync            # create/update the local uv Python environment
+just init            # create the West workspace and fetch ZMK/Zephyr/modules
+just zephyr-export   # register this Zephyr checkout with CMake
+```
+
+Normal use:
+
+```bash
+just build
+```
+
+Occasional maintenance:
+
+```bash
+just sync            # after pyproject.toml or uv.lock changes
+just west-update     # intentionally update ZMK/Zephyr/module checkouts
+just zephyr-export   # after moving the repo or changing Zephyr checkout
+just build           # verify the config still builds
+```
+
+West updates are useful because current ZMK often brings firmware fixes, Studio improvements, board definition changes, and new keymap features. They can also change build behavior, board names, deprecated settings, or keymap validation, so treat `just west-update` as a deliberate dependency update and run `just build` afterwards.
 
 ## Firmware
 
@@ -131,9 +158,11 @@ Do not move to a new JJ change until the current diff has been reviewed.
 ### Dependencies
 
 ```bash
-brew install dtc ninja just
-pip install west protobuf grpcio-tools
+brew install cmake dtc ninja protobuf just uv
+just sync
 ```
+
+Python build tooling is declared in `pyproject.toml` and installed into a repo-local `.venv` by `uv`. Native build tools such as `cmake`, `ninja`, `dtc`, `protoc`, and the Zephyr SDK are still provided by the host system.
 
 ### Install Zephyr SDK
 
@@ -157,6 +186,7 @@ status            # jj status
 diff-stat         # jj diff --stat
 diff              # jj diff --git
 hunk              # hunk diff
+sync              # uv sync
 init              # west init -l config; west update
 west-update       # west update
 zephyr-export     # west zephyr-export

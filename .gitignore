@@ -1,8 +1,10 @@
 build
+.venv/
 .DS_Store
 .west/
 modules/
 zephyr/
 zmk/
 zmk-helpers/
+firmware/
 firmware_for_studio/

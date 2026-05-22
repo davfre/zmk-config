@@ -2,11 +2,11 @@
 set -e
 
 echo "Building LEFT (with Studio)..."
-west build -s zmk/app -d build/cradio_left_studio -b nice_nano_v2 \
+west build -s zmk/app -d build/cradio_left_studio -b 'nice_nano//zmk' \
   -S studio-rpc-usb-uart -- -DSHIELD=cradio_left -DCONFIG_ZMK_STUDIO=y
 
 echo "Building RIGHT..."
-west build -s zmk/app -d build/cradio_right -b nice_nano_v2 \
+west build -s zmk/app -d build/cradio_right -b 'nice_nano//zmk' \
   -- -DSHIELD=cradio_right
 
 echo "Copying .uf2 files to firmware/..."

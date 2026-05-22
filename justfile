@@ -1,4 +1,5 @@
 set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
+west := "uv run west"
 
 default:
     @just --list
@@ -15,22 +16,25 @@ diff:
 hunk:
     hunk diff
 
+sync:
+    uv sync
+
 init:
-    west init -l config
-    west update
+    {{west}} init -l config
+    {{west}} update
 
 west-update:
-    west update
+    {{west}} update
 
 zephyr-export:
-    west zephyr-export
+    {{west}} zephyr-export
 
 _build-left:
-    west build -s zmk/app -d build/cradio_left_studio -b nice_nano_v2 \
+    {{west}} build -s zmk/app -d build/cradio_left_studio -b 'nice_nano//zmk' \
       -S studio-rpc-usb-uart -- -DSHIELD=cradio_left -DCONFIG_ZMK_STUDIO=y
 
 _build-right:
-    west build -s zmk/app -d build/cradio_right -b nice_nano_v2 \
+    {{west}} build -s zmk/app -d build/cradio_right -b 'nice_nano//zmk' \
       -- -DSHIELD=cradio_right
 
 build: _build-left _build-right _collect-firmware
