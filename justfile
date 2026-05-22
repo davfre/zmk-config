@@ -19,6 +19,9 @@ hunk:
 sync:
     uv sync
 
+layout-ref:
+    uv run python scripts/render_layout_reference.py
+
 init:
     {{west}} init -l config
     {{west}} update

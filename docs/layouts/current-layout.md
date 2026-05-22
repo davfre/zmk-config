@@ -2,7 +2,55 @@
 
 Source: `../../config/cradio.keymap`
 
-This is the human-readable reference for the currently active keymap. It should be updated when `cradio.keymap` changes, especially after edits made through ZMK Studio.
+This is the generated human-readable reference for the currently active keymap. Regenerate it after keymap edits, especially after edits made through ZMK Studio.
+
+Generated printable reference:
+
+- `current-layout.html`
+- `current-layout.svg`
+
+Open `current-layout.html` in a browser for the printable view. Use browser print / save as PDF for a one-page PDF copy.
+
+Regenerate all layout references with:
+
+```bash
+just layout-ref
+```
+
+## Compact Reference
+
+```text
+Access
+  hold left thumb TAB  -> LFT symbols
+  hold right thumb BSP -> RGT numbers/nav
+  hold both LFT + RGT  -> TRI system
+
+DEFAULT
+  Q       W       F       P       B       | J       L       U       Y       ;
+  A/SFT   R/ALT   S/CTL   T/GUI   G       | M       N/GUI   E/CTL   I/ALT   O/SFT
+  Z       X       C       D       V       | K       H       ,       .       /
+                          TAB/LFT ENTER   | SPACE   BSP/RGT
+
+LFT symbols
+  ~       .       {       }       Studio  | ^       (       )       [       ]
+  @       !       #       $       %       | *       -       =       \       |
+  Studio  .       .       .       .       | &       _       +       `       .
+                          .       .       | .       .
+
+RGT numbers/nav
+  INS     1       2       3       .       | HOME    PGDN    PGUP    END     .
+  DEL     4       5       6       .       | LEFT    DOWN    UP      RIGHT   :
+  CAPS    7       8       9       0       | AE      OE      AA      A-um    O-um
+                          .       ESC     | .       .
+
+TRI system
+  Reset   .       Studio  .       BT0     | .       .       .       .       Reset
+  Boot    .       .       .       BT1     | .       .       .       .       Boot
+  .       .       .       BTClr   BT2     | .       .       .       .       .
+                          .       .       | .       .
+```
+
+Dots represent transparent keys.
 
 ## Layer Summary
 
@@ -23,64 +71,45 @@ This is the human-readable reference for the currently active keymap. It should 
 ## DEFAULT
 
 ```text
-Left hand                         Right hand
-Q      W      F      P      B      J      L      U      Y      ;
-A/SFT  R/ALT  S/CTL  T/GUI  G      M      N/GUI  E/CTL  I/ALT  O/SFT
-Z      X      C      D      V      K      H      ,      .      /
-
-Thumbs:
-TAB/LFT    ENTER                  SPACE     BSPC/RGT
+  Q       W       F       P       B       | J       L       U       Y       ;
+  A/SFT   R/ALT   S/CTL   T/GUI   G       | M       N/GUI   E/CTL   I/ALT   O/SFT
+  Z       X       C       D       V       | K       H       ,       .       /
+                          TAB/LFT ENTER   | SPACE   BSP/RGT
 ```
-
-Home-row mod notes:
-
-- Left home row holds: Shift, Alt, Ctrl, GUI.
-- Right home row holds: GUI, Ctrl, Alt, Shift.
 
 ## RGT
 
 ```text
-Left hand                         Right hand
-INS    1      2      3      .      HOME   PGDN   PGUP   END    .
-DEL    4      5      6      .      LEFT   DOWN   UP     RIGHT  :
-CAPS   7      8      9      0      AE     OE     AA     A-UML  O-UML
-
-Thumbs:
-.      ESC                        .      .
+  INS     1       2       3       .       | HOME    PGDN    PGUP    END     .
+  DEL     4       5       6       .       | LEFT    DOWN    UP      RIGHT   :
+  CAPS    7       8       9       0       | AE      OE      AA      A-um    O-um
+                          .       ESC     | .       .
 ```
-
-Dots represent transparent keys.
 
 ## LFT
 
 ```text
-Left hand                         Right hand
-~      .      {      }      Studio ^      (      )      [      ]
-@      !      #      $      %      *      -      =      \      |
-Studio .      .      .      .      &      _      +      `      .
-
-Thumbs:
-.      .                          .      .
+  ~       .       {       }       Studio  | ^       (       )       [       ]
+  @       !       #       $       %       | *       -       =       \       |
+  Studio  .       .       .       .       | &       _       +       `       .
+                          .       .       | .       .
 ```
-
-Dots represent transparent keys.
 
 ## TRI
 
 ```text
-Left hand                         Right hand
-Reset  .      Studio .      BT0    .      .      .      .      Reset
-Boot   .      .      .      BT1    .      .      .      .      Boot
-.      .      .      BTClear BT2   .      .      .      .      .
-
-Thumbs:
-.      .                          .      .
+  Reset   .       Studio  .       BT0     | .       .       .       .       Reset
+  Boot    .       .       .       BT1     | .       .       .       .       Boot
+  .       .       .       BTClr   BT2     | .       .       .       .       .
+                          .       .       | .       .
 ```
 
 Dots represent transparent keys.
 
 ## Notes
 
-- `&studio_unlock` is present on `LFT` and `TRI`.
-- `cradio.conf` is currently empty.
-- `HOST_OS` is set to `2` in `cradio.keymap` for Unicode helper behavior.
+- Center labels come from `DEFAULT`.
+- Top-left labels in the SVG are `LFT`.
+- Top-right labels in the SVG are `RGT`.
+- Top-center red labels in the SVG are `TRI`.
+- Bottom-center labels in the SVG are held modifiers or held layers from `DEFAULT`.

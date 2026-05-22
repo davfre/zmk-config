@@ -140,6 +140,7 @@ just status
 just diff-stat
 just diff
 just hunk
+just layout-ref
 jj show @
 ```
 
@@ -187,6 +188,7 @@ diff-stat         # jj diff --stat
 diff              # jj diff --git
 hunk              # hunk diff
 sync              # uv sync
+layout-ref        # generate printable layout HTML/SVG
 init              # west init -l config; west update
 west-update       # west update
 zephyr-export     # west zephyr-export
