@@ -29,7 +29,7 @@ DEFAULT
   Q       W       F       P       B       | J       L       U       Y       ;
   A/SFT   R/ALT   S/CTL   T/GUI   G       | M       N/GUI   E/CTL   I/ALT   O/SFT
   Z       X       C       D       V       | K       H       ,       .       /
-                          TAB/LFT ENTER   | SPACE   BSP/RGT
+                          TAB/LFT SPACE   | ENTER   BSP/RGT
 
 LFT symbols
   ~       .       {       }       Studio  | ^       (       )       [       ]
@@ -68,13 +68,17 @@ Dots represent transparent keys.
 - Hold both `LFT` and `RGT` for `TRI`.
 - `extra1` and `extra2` are not reachable yet.
 
+## Combos
+
+- `LH1 + LH0` (left outer thumb + left inner thumb) -> `Voice` on `DEFAULT`; timeout `60 ms`.
+
 ## DEFAULT
 
 ```text
   Q       W       F       P       B       | J       L       U       Y       ;
   A/SFT   R/ALT   S/CTL   T/GUI   G       | M       N/GUI   E/CTL   I/ALT   O/SFT
   Z       X       C       D       V       | K       H       ,       .       /
-                          TAB/LFT ENTER   | SPACE   BSP/RGT
+                          TAB/LFT SPACE   | ENTER   BSP/RGT
 ```
 
 ## RGT
@@ -113,3 +117,4 @@ Dots represent transparent keys.
 - Top-right labels in the SVG are `RGT`.
 - Top-center red labels in the SVG are `TRI`.
 - Bottom-center labels in the SVG are held modifiers or held layers from `DEFAULT`.
+- Purple markings in the SVG are combos.

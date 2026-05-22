@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import html
 import re
+from dataclasses import dataclass
 from pathlib import Path
 
 
@@ -75,6 +76,7 @@ KEY_LABELS = {
     "N7": "7",
     "N8": "8",
     "N9": "9",
+    "C_VOICE_COMMAND": "Voice",
 }
 
 BEHAVIOR_LABELS = {
@@ -133,6 +135,59 @@ MARKDOWN_MODS = {
     "Shift": "SFT",
     "Ctrl": "CTL",
 }
+
+KEY_POSITION_INDEXES = {
+    "LT4": 0,
+    "LT3": 1,
+    "LT2": 2,
+    "LT1": 3,
+    "LT0": 4,
+    "RT0": 5,
+    "RT1": 6,
+    "RT2": 7,
+    "RT3": 8,
+    "RT4": 9,
+    "LM4": 10,
+    "LM3": 11,
+    "LM2": 12,
+    "LM1": 13,
+    "LM0": 14,
+    "RM0": 15,
+    "RM1": 16,
+    "RM2": 17,
+    "RM3": 18,
+    "RM4": 19,
+    "LB4": 20,
+    "LB3": 21,
+    "LB2": 22,
+    "LB1": 23,
+    "LB0": 24,
+    "RB0": 25,
+    "RB1": 26,
+    "RB2": 27,
+    "RB3": 28,
+    "RB4": 29,
+    "LH1": 30,
+    "LH0": 31,
+    "RH0": 32,
+    "RH1": 33,
+}
+
+KEY_POSITION_LABELS = {
+    "LH1": "left outer thumb",
+    "LH0": "left inner thumb",
+    "RH0": "right inner thumb",
+    "RH1": "right outer thumb",
+}
+
+
+@dataclass(frozen=True)
+class Combo:
+    name: str
+    binding: str
+    key_positions: list[str]
+    layers: list[str]
+    timeout_ms: str
 
 
 def strip_comments(text: str) -> str:
@@ -207,6 +262,53 @@ def label_for_binding(behavior: str, args: list[str]) -> str:
     return BEHAVIOR_LABELS.get(behavior, behavior)
 
 
+def parse_single_binding(binding: str) -> str:
+    tokens = binding.split()
+    if not tokens or not tokens[0].startswith("&"):
+        return binding
+
+    behavior = tokens[0][1:]
+    args = tokens[1:]
+    return label_for_binding(behavior, args)
+
+
+def split_macro_args(arg_text: str) -> list[str]:
+    args: list[str] = []
+    current = []
+    depth = 0
+    for char in arg_text:
+        if char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+        elif char == "," and depth == 0:
+            args.append("".join(current).strip())
+            current = []
+            continue
+        current.append(char)
+    if current:
+        args.append("".join(current).strip())
+    return args
+
+
+def parse_combos(text: str) -> list[Combo]:
+    combos: list[Combo] = []
+    for match in re.finditer(r"ZMK_COMBO\((?P<args>.*?)\)", strip_comments(text), flags=re.S):
+        args = split_macro_args(match.group("args"))
+        if len(args) < 3:
+            continue
+        combos.append(
+            Combo(
+                name=args[0],
+                binding=parse_single_binding(args[1]),
+                key_positions=args[2].split(),
+                layers=args[3].split() if len(args) >= 4 else [],
+                timeout_ms=args[4] if len(args) >= 5 else "30",
+            )
+        )
+    return combos
+
+
 def parse_bindings(body: str) -> list[str]:
     body = strip_comments(body)
     tokens = body.split()
@@ -254,6 +356,12 @@ def parse_bindings(body: str) -> list[str]:
 def parse_keymap(path: Path) -> dict[str, list[str]]:
     text = path.read_text()
     return {layer: parse_bindings(body) for layer, body in extract_binding_blocks(text).items()}
+
+
+def parse_layout(path: Path) -> tuple[dict[str, list[str]], list[Combo]]:
+    text = path.read_text()
+    labels = {layer: parse_bindings(body) for layer, body in extract_binding_blocks(text).items()}
+    return labels, parse_combos(text)
 
 
 def key_positions() -> list[tuple[float, float]]:
@@ -331,11 +439,36 @@ def render_key(index: int, x: float, y: float, labels: dict[str, list[str]]) -> 
     return "\n".join(part for part in parts if part)
 
 
-def render_svg(labels: dict[str, list[str]]) -> str:
+def render_combo_annotations(combos: list[Combo], positions: list[tuple[float, float]]) -> str:
+    key_w = 72
+    key_h = 62
+    parts: list[str] = []
+    for combo in combos:
+        indexes = [KEY_POSITION_INDEXES[position] for position in combo.key_positions if position in KEY_POSITION_INDEXES]
+        if len(indexes) < 2:
+            continue
+        centers = [(positions[index][0] + key_w / 2, positions[index][1] + key_h / 2) for index in indexes]
+        x1, y1 = centers[0]
+        x2, y2 = centers[-1]
+        label_x = (x1 + x2) / 2
+        label_y = max(y1, y2) + 52
+        parts.extend(
+            [
+                f'<line x1="{x1:.1f}" y1="{y1 + 28:.1f}" x2="{x2:.1f}" y2="{y2 + 28:.1f}" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" />',
+                f'<circle cx="{x1:.1f}" cy="{y1 + 28:.1f}" r="4" fill="#7c3aed" />',
+                f'<circle cx="{x2:.1f}" cy="{y2 + 28:.1f}" r="4" fill="#7c3aed" />',
+                svg_text(label_x, label_y, f"combo: {combo.binding}", 10, "#6d28d9", weight="700"),
+            ]
+        )
+    return "\n".join(parts)
+
+
+def render_svg(labels: dict[str, list[str]], combos: list[Combo]) -> str:
     positions = key_positions()
     width = 916
-    height = 420
+    height = 430
     keys = "\n".join(render_key(i, x, y, labels) for i, (x, y) in enumerate(positions))
+    combo_annotations = render_combo_annotations(combos, positions)
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">
   <title id="title">Current Cradio Layout</title>
   <desc id="desc">Printable generated reference for the active Cradio keymap.</desc>
@@ -354,9 +487,11 @@ def render_svg(labels: dict[str, list[str]]) -> str:
     <text x="138" y="0" fill="{CATEGORY_COLORS['rgt']}">RGT</text>
     <text x="184" y="0" fill="{CATEGORY_COLORS['tri']}">TRI</text>
     <text x="230" y="0" fill="{CATEGORY_COLORS['mod']}">hold</text>
+    <text x="282" y="0" fill="#6d28d9">combo</text>
   </g>
   <line x1="458" y1="88" x2="458" y2="386" stroke="#e5e7eb" stroke-width="2" stroke-dasharray="6 6" />
   {keys}
+  {combo_annotations}
 </svg>
 """
 
@@ -433,7 +568,26 @@ def format_markdown_layer(labels: dict[str, list[str]], layer_name: str, title: 
     return f"{title}\n" + "\n".join(rows)
 
 
-def render_markdown(labels: dict[str, list[str]]) -> str:
+def describe_combo_position(position: str) -> str:
+    return KEY_POSITION_LABELS.get(position, position)
+
+
+def render_markdown_combos(combos: list[Combo]) -> str:
+    if not combos:
+        return "No combos are currently defined."
+
+    lines = []
+    for combo in combos:
+        positions = " + ".join(combo.key_positions)
+        descriptions = " + ".join(describe_combo_position(position) for position in combo.key_positions)
+        layer_text = ", ".join(combo.layers) if combo.layers else "all layers"
+        lines.append(
+            f"- `{positions}` ({descriptions}) -> `{combo.binding}` on `{layer_text}`; timeout `{combo.timeout_ms} ms`."
+        )
+    return "\n".join(lines)
+
+
+def render_markdown(labels: dict[str, list[str]], combos: list[Combo]) -> str:
     compact_layers = [
         format_markdown_layer(labels, "DEFAULT", "DEFAULT"),
         format_markdown_layer(labels, "LFT", "LFT symbols"),
@@ -501,6 +655,10 @@ Dots represent transparent keys.
 - Hold both `LFT` and `RGT` for `TRI`.
 - `extra1` and `extra2` are not reachable yet.
 
+## Combos
+
+{render_markdown_combos(combos)}
+
 {detail_sections}
 
 Dots represent transparent keys.
@@ -512,6 +670,7 @@ Dots represent transparent keys.
 - Top-right labels in the SVG are `RGT`.
 - Top-center red labels in the SVG are `TRI`.
 - Bottom-center labels in the SVG are held modifiers or held layers from `DEFAULT`.
+- Purple markings in the SVG are combos.
 """
 
 
@@ -523,9 +682,9 @@ def main() -> None:
     parser.add_argument("--html", type=Path, default=DEFAULT_HTML)
     args = parser.parse_args()
 
-    labels = parse_keymap(args.keymap)
-    svg = render_svg(labels)
-    args.markdown.write_text(render_markdown(labels))
+    labels, combos = parse_layout(args.keymap)
+    svg = render_svg(labels, combos)
+    args.markdown.write_text(render_markdown(labels, combos))
     args.svg.write_text(svg)
     args.html.write_text(render_html(svg))
     print(f"Wrote {args.markdown}")

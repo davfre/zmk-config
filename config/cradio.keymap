@@ -23,6 +23,9 @@
 #define LFT 2
 #define TRI 3
 
+// Press both left thumb keys together for dictation / voice command.
+ZMK_COMBO(handy_voice, &kp C_VOICE_COMMAND, LH1 LH0, DEFAULT, 60)
+
 / {
     behaviors {
         ht: hold_tap { 
@@ -60,7 +63,7 @@
         //│  Z       │  X       │  C       │  D       │  V       │   │  K       │  H       │ , <      │ . >      │ / ?      │
             &kp Z      &kp X      &kp C      &kp D      &kp V          &kp K      &kp H      &kp COMMA  &kp DOT    &kp FSLH
         //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
-                                            &lt LFT TAB   &kp ENTER     &kp SPACE  &lt RGT BSPC
+                                            &lt LFT TAB   &kp SPACE     &kp ENTER  &lt RGT BSPC
         //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
             >;
         };
